@@ -1005,6 +1005,8 @@ wn dec -242 if esb < -1773
 tyg inc 574 if d == -119
 d dec 423 if i > 3540`
 
+let highest = 0
+
 const performInstruction = (registers, instruction) => {
   let tempReg = { ...registers }
   let [
@@ -1028,8 +1030,17 @@ const performInstruction = (registers, instruction) => {
     tempReg[targetReg] = tempReg[targetReg] + changeVal
   }
 
+  let tempHighest = checkHighest(tempReg)
+
+  highest = tempHighest > highest ? tempHighest : highest
+
   return tempReg
 }
+
+const checkHighest = registers =>
+  Object.keys(registers)
+    .map(val => +registers[val])
+    .sort((a, b) => b - a)[0]
 
 const day8 = val => {
   const instructions = val.split('\n')
@@ -1038,9 +1049,7 @@ const day8 = val => {
     registers = performInstruction(registers, instruction)
   })
 
-  return Object.keys(registers)
-    .map(val => +registers[val])
-    .sort((a, b) => b - a)[0]
+  return highest
 }
 
 const retVal = day8(input)
