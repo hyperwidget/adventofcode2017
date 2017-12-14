@@ -53,6 +53,6 @@ const day10 = val => {
   return list
 }
 
-const retVal = day10(input)
+const retVal = day10('input')
 console.log(retVal)
 console.log(retVal[0] * retVal[1])
