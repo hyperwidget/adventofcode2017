@@ -62,7 +62,7 @@ const day13 = val => {
   while (!clear) {
     let count = 0
     for (let i = 0; i < data.length; i++) {
-      if (data[i] && (i + wait) % (2 * (data[i] - 1)) == 0) {
+      if ((i + wait) % (2 * (data[i] - 1)) == 0) {
         count++
         break
       }
