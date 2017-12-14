@@ -1,5 +1,5 @@
 const test1 = `flqrgnkx`
-const test1Result = 8108
+const test1Result = 1242
 
 const input = `ljoxqyyw`
 
@@ -73,15 +73,54 @@ const generateList = amount => {
 
 const day14 = val => {
   let total = 0
+  let grid = []
+  let uuid = 2
 
-  for (let i = 0; i < 128; i++) {
-    const hashed = hash(`${val}-${i}`)
-    total += hashed.split('').reduce((sum, char) => {
+  // Generate the grid
+  for (let x = 0; x < 128; x++) {
+    grid.push([])
+    const hashed = hash(`${val}-${x}`)
+    hashed.split('').map(char => {
       const binary = ('00000' + parseInt(char, 16).toString(2)).slice(-4)
-      return sum + binary.split('').reduce((sum, val) => sum + +val, 0)
-    }, 0)
+      binary.split('').map((val, y) => grid[x].push(+val))
+    })
   }
-  return total
+
+  const connect = (rowIndex, columnIndex, uuid) => {
+    const up = rowIndex - 1
+    const down = rowIndex + 1
+    const left = columnIndex - 1
+    const right = columnIndex + 1
+
+    if (grid[rowIndex][right] && grid[rowIndex][right] === 1) {
+      grid[rowIndex][right] = uuid
+      connect(rowIndex, right, uuid)
+    }
+    if (grid[rowIndex][left] && grid[rowIndex][left] === 1) {
+      grid[rowIndex][left] = uuid
+      connect(rowIndex, left, uuid)
+    }
+    if (grid[up] && grid[up][columnIndex] === 1) {
+      grid[up][columnIndex] = uuid
+      connect(up, columnIndex, uuid)
+    }
+    if (grid[down] && grid[down][columnIndex] === 1) {
+      grid[down][columnIndex] = uuid
+      connect(down, columnIndex, uuid)
+    }
+  }
+
+  grid.forEach((row, rowIndex) => {
+    row.forEach((column, columnIndex) => {
+      if (column === 1) {
+        grid[rowIndex][columnIndex] = uuid
+        connect(rowIndex, columnIndex, uuid)
+        uuid++
+      }
+    })
+  })
+
+  return uuid - 2 // Minus 2 because that's where I started the uuids @
 }
 
 if (day14(test1) == test1Result) console.log('test1 pass')
